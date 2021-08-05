@@ -24,17 +24,25 @@ If you don't already have them :
 - Install ruby 3.0.1 `rbenv install 3.0.1 && rbenv global 3.0.1`
 - Install PostgreSQL
 
-Install the dependencies
+**Install the dependencies**
 
-`bundle install`
-`yarn install`
+```
+bundle install
+yarn install
+```
 #### Database
 
 - Create the database : `rails db:create`
 - Run the migrations : `rails db:migrate`
 - Run the seed to populate the data : `rails db:seed`
 
-The seed will create the instances of Customers, Merchants and Transactions based on the exercices `(see ./transactions-sample.csv)`
+The seed will create instances of : 
+- Customers,
+- Merchants
+- Transactions 
+_based on the exercices (see `db/seed` & `./transactions-sample.csv`)_
+
+and one User who will be able to use the API.
 
 #### Running
 
@@ -46,14 +54,22 @@ rails s
 
 Then use Postman (or another tool) to send the requests to the API endpoints.
 
-To create a new instance of transaction send a POST request to
+#### API Endpoints
 
 ```
-http://localhost:3000/api/v1/transactions
+POST  api/v1/transactions
 ```
 
-with the format
-
+- **Headers**
+_Those data come from the seed_
+```json
+{
+"Content-Type": "application/json",
+"X-User-Email": "test@test.com",
+"X-User-Token": "m2_T9AkghFbMYQqc46--"
+}
+```
+- **Body**
 ```json
 {
 "transaction_id" : 2342357,
@@ -66,7 +82,7 @@ with the format
 }
 ```
 
-the response will look like
+If response from fraud validator OK
 
 ```json
 { 
@@ -74,7 +90,7 @@ the response will look like
 "recommendation" : "approve"
 }
 ```
-if it is approved by the Fraud verification system and
+If response from fraud validator Not OK
 
 ```json
 { 
@@ -82,10 +98,10 @@ if it is approved by the Fraud verification system and
 "recommendation" : "deny"
 }
 ```
-if it is denied
+
 #### Testing
 
-To launch the tests locally, run:
+For testing we're using rspec, to launch the tests locally, run:
 
 ```bash
 rspec
