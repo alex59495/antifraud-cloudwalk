@@ -43,9 +43,9 @@ class ScoreCalculation < ApplicationService
     elsif average_amount_user && transaction.transaction_amount > 3 * average_amount_user
       self.score += 3
     elsif average_amount_user && transaction.transaction_amount > 2 * average_amount_user
-      self.score += 3
+      self.score += 2
     end
-    
+
     self.score
   end
 end

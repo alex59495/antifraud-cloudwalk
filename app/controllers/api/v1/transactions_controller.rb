@@ -32,7 +32,7 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   private
 
   def params_transaction_id
-    params.require(:transaction)[:transaction_id].to_i
+    params[:transaction_id]
   end
 
   def find_transaction
@@ -48,7 +48,7 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   end
 
   def params_transaction
-    params.require(:transaction).permit(:user_id, :merchant_id, :card_number, :transaction_date, :transaction_amount, :device_id, :has_cbk, :transaction_id)
+    params.require(:transaction).permit(:user_id, :merchant_id, :card_number, :transaction_date, :transaction_amount, :device_id, :has_cbk)
   end
 
   def render_error

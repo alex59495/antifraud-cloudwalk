@@ -21,9 +21,9 @@ gem 'jbuilder', '~> 2.7'
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-gem 'faker'
-gem 'simple_token_authentication', '~> 1.0' # see semver.org
-gem 'devise'
+gem 'faker', '~> 2.18.0'
+gem 'simple_token_authentication', '~> 1.17.0' # see semver.org
+gem 'devise', '~> 4.8.0'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -34,12 +34,12 @@ gem 'bootsnap', '>= 1.4.4', require: false
 group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'factory_bot_rails'
-  gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails', '~> 6.2.0'
+  gem 'database_cleaner-active_record', '~> 2.0.1'
   gem 'rspec-rails', '~> 5.0.0'
   gem 'shoulda-matchers', '~> 5.0'
   gem 'rexml'
-  gem 'rspec-json_expectations'
+  gem 'rspec-json_expectations', '~> 2.2.0'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
