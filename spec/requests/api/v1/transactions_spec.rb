@@ -22,7 +22,7 @@ RSpec.describe "Transactions", type: :request do
 
       transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: { transaction: transaction_params }, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: headers
 
       expect(response.body).to include_json(
         error: "Your token or email isn't working, please verify the infos !"
@@ -38,7 +38,7 @@ RSpec.describe "Transactions", type: :request do
 
       transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: { transaction: transaction_params }, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: headers
 
       expect(response.body).to include_json(
         transaction_id: 123456,
@@ -57,7 +57,7 @@ RSpec.describe "Transactions", type: :request do
 
       transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: { transaction: transaction_params }, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: headers
 
       expect(response.body).to include_json(
         transaction_id: 123456,
@@ -74,7 +74,7 @@ RSpec.describe "Transactions", type: :request do
 
       transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id)
 
-      post api_v1_transactions_path, params: { transaction: transaction_params }, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: headers
       expect(response.body).to include_json(
         error: "User field isn't filled or doesn't exist, please correct the request"
       )
@@ -90,7 +90,7 @@ RSpec.describe "Transactions", type: :request do
       create(:transaction, id: '123456')
       transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id, user_id: customer.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: { transaction: transaction_params }, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: headers
 
       expect(response.body).to include_json(
         error: "The transaction already exists"

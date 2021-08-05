@@ -3,10 +3,9 @@ class Api::V1::BaseController < ApplicationController
   
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from TransactionError::TransactionAlreadyExists, with: :transaction_already_exists
-  rescue_from TransactionError::CustomerError, with: :customer_error
-  rescue_from TransactionError::MerchantError, with: :merchant_error
-  rescue_from TransactionError::FraudError, with: :fraud_error
-  rescue_from TransactionError::FraudErrorScore, with: :fraud_error_score
+  rescue_from TransactionError::CustomerEmpty, with: :customer_empty
+  rescue_from TransactionError::MerchantEmpty, with: :merchant_empty
+  rescue_from TransactionError::TransactionEmpty, with: :transaction_empty
 
 
   def not_found(exception)
@@ -17,19 +16,15 @@ class Api::V1::BaseController < ApplicationController
     render json: { error: exception.message }, status: :unprocessable_entity
   end
 
-  def customer_error(exception)
+  def customer_empty(exception)
     render json: { error: exception.message }, status: :unprocessable_entity
   end
 
-  def merchant_error(exception)
+  def merchant_empty(exception)
     render json: { error: exception.message }, status: :unprocessable_entity
   end
 
-  def fraud_error(exception)
-    render json: { error: exception.message }, status: :unprocessable_entity
-  end
-
-  def fraud_error_score(exception)
+  def transaction_empty(exception)
     render json: { error: exception.message }, status: :unprocessable_entity
   end
 end

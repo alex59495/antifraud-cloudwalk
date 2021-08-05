@@ -9,15 +9,15 @@ class ScoreCalculation < ApplicationService
     @score = 0
   end
 
-  # Si l'utilisateur a deja réalisé une transaction :
-  # < 10 min -> 5 points
-  # < 30 min -> 4 points
+  # If the customer already made a transaction :
+  # < 10 min -> 10 points
+  # < 30 min -> 6 points
   # < 1 heure -> 3 points
   # < 6 heures -> 2 points
   # < 1 jour -> 1 points
 
-  # Si montant de la transaction > moyenne des transactions de l'utilisateur :
-  # x 5 -> 5 points
+  # If the amount is > average transactions from the user :
+  # x 5 -> 6 points
   # x 3 -> 3 points
   # x 2 -> 2 points
 
@@ -25,9 +25,9 @@ class ScoreCalculation < ApplicationService
     transactions = Transaction.where(user_id: user.id)
 
     if TransactionTimeVerif.call(transaction, 10.minutes, transactions)
-      self.score += 5
+      self.score += 10
     elsif TransactionTimeVerif.call(transaction, 30.minutes, transactions)
-      self.score += 4
+      self.score += 6
     elsif TransactionTimeVerif.call(transaction, 1.hour, transactions)
       self.score += 3
     elsif TransactionTimeVerif.call(transaction, 6.hour, transactions)
@@ -39,11 +39,11 @@ class ScoreCalculation < ApplicationService
     average_amount_user = CalculAverageAmount.call(user)
 
     if average_amount_user && transaction.transaction_amount > 5 * average_amount_user
-      self.score += 5
+      self.score += 6
     elsif average_amount_user && transaction.transaction_amount > 3 * average_amount_user
       self.score += 3
     elsif average_amount_user && transaction.transaction_amount > 2 * average_amount_user
-      self.score += 2
+      self.score += 1
     end
 
     self.score
