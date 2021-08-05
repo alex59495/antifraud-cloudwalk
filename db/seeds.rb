@@ -11,6 +11,7 @@ User.destroy_all
 Merchant.destroy_all
 p "Destroyed the database"
 
+p "Creating the data, please wait..."
 CSV.foreach('./transactional-sample.csv', headers: true, encoding:'utf-8', col_sep: ",") do |row|
   # Create a hash for each MOA with the header of the CSV file
   transac = row.to_h
@@ -30,11 +31,13 @@ CSV.foreach('./transactional-sample.csv', headers: true, encoding:'utf-8', col_s
     t = Transaction.create!(
       id: transac['transaction_id'],
       merchant_id: transac['merchant_id'],
-      customer_id: transac['user_id'],
+      user_id: transac['user_id'],
       card_number: transac['card_number'],
       transaction_date: transac['transaction_date'],
       transaction_amount: transac['transaction_amount'],
-      device_id: transac['device_id']
+      device_id: transac['device_id'],
+      has_cbk: transac['has_cbk'] == "TRUE",
+      recommendation: true
     )
   end
 end

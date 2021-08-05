@@ -1,1 +1,2 @@
-json.extract! @transaction, :id, :recommendation
+json.transaction_id @transaction.id
+json.recommendation @transaction.recommendation ? 'approve' : 'deny'

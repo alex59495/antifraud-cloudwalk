@@ -7,17 +7,16 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   def show; end
 
   def create
+    raise CustomerError unless PresenceValidation.call(customer: @customer)
+    raise MerchantError unless PresenceValidation.call(merchant: @merchant)
     raise TransactionAlreadyExists if Transaction.find_by(id: params[:transaction_id])
 
-    if PresenceValidation.call(@customer, @merchant)
-      @transaction = Transaction.new(params_transaction.merge(id: params[:transaction_id]))
-      if @transaction.save
-        render :show
-      else
-        render_error
-      end
+    @transaction = Transaction.new(params_transaction.merge(id: params[:transaction_id]))
+    @transaction.recommendation = true if FraudValidation.call(@transaction, @customer)
+    if @transaction.save
+      render :show
     else
-      render json: {error: "Voila une belle erreur"}
+      render_error
     end
   end
 
