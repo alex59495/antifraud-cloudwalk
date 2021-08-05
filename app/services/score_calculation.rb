@@ -38,11 +38,11 @@ class ScoreCalculation < ApplicationService
 
     average_amount_user = CalculAverageAmount.call(user)
 
-    if transaction.transaction_amount > 5 * average_amount_user
+    if average_amount_user && transaction.transaction_amount > 5 * average_amount_user
       self.score += 5
-    elsif transaction.transaction_amount > 3 * average_amount_user
+    elsif average_amount_user && transaction.transaction_amount > 3 * average_amount_user
       self.score += 3
-    elsif transaction.transaction_amount > 2 * average_amount_user
+    elsif average_amount_user && transaction.transaction_amount > 2 * average_amount_user
       self.score += 3
     end
     

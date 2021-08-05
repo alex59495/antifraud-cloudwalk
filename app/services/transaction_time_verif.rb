@@ -9,6 +9,6 @@ class TransactionTimeVerif < ApplicationService
   end
 
   def call
-    transactions.where('transaction_date < ?', transaction.transaction_date - time).any?
+    transactions.where('transaction_date > ?', transaction.transaction_date - time).any?
   end
 end

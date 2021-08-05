@@ -9,10 +9,11 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   def create
     raise CustomerError unless PresenceValidation.call(customer: @customer)
     raise MerchantError unless PresenceValidation.call(merchant: @merchant)
-    raise TransactionAlreadyExists if Transaction.find_by(id: params[:transaction_id])
+    raise TransactionAlreadyExists if Transaction.find_by(id: params_transaction_id)
 
-    @transaction = Transaction.new(params_transaction.merge(id: params[:transaction_id]))
+    @transaction = Transaction.new(params_transaction)
     @transaction.recommendation = true if FraudValidation.call(@transaction, @customer)
+    @transaction.id = params_transaction_id
     if @transaction.save
       render :show
     else
@@ -30,20 +31,24 @@ class Api::V1::TransactionsController < Api::V1::BaseController
 
   private
 
+  def params_transaction_id
+    params.require(:transaction)[:transaction_id].to_i
+  end
+
   def find_transaction
     @transaction = Transaction.find(params[:transaction_id])
   end
 
   def find_merchant
-    @merchant = Merchant.find_by(id: params[:merchant_id])
+    @merchant = Merchant.find_by(id: params.require(:transaction)[:merchant_id])
   end
 
   def find_customer
-    @customer = Customer.find_by(id: params[:user_id])
+    @customer = Customer.find_by(id: params.require(:transaction)[:user_id])
   end
 
   def params_transaction
-    params.require(:transaction).permit(:user_id, :merchant_id, :card_number, :transaction_date, :transaction_amount, :device_id, :has_cbk)
+    params.require(:transaction).permit(:user_id, :merchant_id, :card_number, :transaction_date, :transaction_amount, :device_id, :has_cbk, :transaction_id)
   end
 
   def render_error
