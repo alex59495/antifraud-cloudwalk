@@ -14,18 +14,30 @@ p "Destroyed the database"
 CSV.foreach('./transactional-sample.csv', headers: true, encoding:'utf-8', col_sep: ",") do |row|
   # Create a hash for each MOA with the header of the CSV file
   transac = row.to_h
-  unless User.find_by(id: transac['user_id'])
-    u = User.create!(
-      id: transac['user_id'],
-      name: Faker::Name.name
-      )
-    p "Create #{u.id} User"
+  unless Customer.find_by(id: transac['user_id'])
+    u = Customer.create!(
+      id: transac['user_id']
+    )
   end
 
   unless Merchant.find_by(id: transac['merchant_id'])
     m = Merchant.create!(
-      id: transac['merchant_id'],
-      )
-    p "Create #{m.id} Merchant"
+      id: transac['merchant_id']
+    )
+  end
+
+  unless Transaction.find_by(id: transac['transaction_id'])
+    t = Transaction.create!(
+      id: transac['transaction_id'],
+      merchant_id: transac['merchant_id'],
+      customer_id: transac['user_id'],
+      card_number: transac['card_number'],
+      transaction_date: transac['transaction_date'],
+      transaction_amount: transac['transaction_amount'],
+      device_id: transac['device_id']
+    )
   end
 end
+p "Data created !"
+
+User.create(email: 'test@test.com', password: 'testtest', authentication_token: 'm2_T9AkghFbMYQqc46--')

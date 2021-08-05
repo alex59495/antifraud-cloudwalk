@@ -10,20 +10,50 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_04_204843) do
+ActiveRecord::Schema.define(version: 2021_08_05_024903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "customers", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "merchants", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "name"
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "merchant_id", null: false
+    t.bigint "user_id", null: false
+    t.string "card_number"
+    t.datetime "transaction_date"
+    t.float "transaction_amount"
+    t.integer "device_id"
+    t.boolean "recommendation", default: false
+    t.boolean "has_cbk", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["merchant_id"], name: "index_transactions_on_merchant_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "authentication_token", limit: 30
+    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "transactions", "customers", column: "user_id"
+  add_foreign_key "transactions", "merchants"
 end
