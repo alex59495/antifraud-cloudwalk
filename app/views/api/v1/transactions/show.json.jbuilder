@@ -1,2 +1,7 @@
 json.transaction_id @transaction.id
-json.recommendation @transaction.recommendation ? 'approve' : 'deny'
+case params[:action]
+when 'create'
+  json.recommendation @transaction.recommendation ? 'approve' : 'deny'
+when 'update'
+  json.has_cbk @transaction.has_cbk ? true : false
+end

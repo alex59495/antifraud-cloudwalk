@@ -23,7 +23,9 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   end
 
   def update
-    if @transaction
+    return unless @transaction && params_chargeback
+
+    if @transaction.update(has_cbk: params_chargeback)
       render :show
     else
       render_error
@@ -34,6 +36,10 @@ class Api::V1::TransactionsController < Api::V1::BaseController
 
   def params_transaction_id
     params[:transaction_id]
+  end
+
+  def params_chargeback
+    params[:chargeback]
   end
 
   def find_transaction

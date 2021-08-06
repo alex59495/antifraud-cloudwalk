@@ -11,6 +11,11 @@ RSpec.describe "Transactions", type: :request do
     before do
       customer
       merchant
+      @headers = {
+        'ACCEPT': 'application/json',
+        'X-User-Token': user.authentication_token,
+        'X-User-Email': user.email
+      }
     end
 
     it "Won't accept incorrect token" do
@@ -30,15 +35,9 @@ RSpec.describe "Transactions", type: :request do
     end
     
     it "works with complete data" do
-      headers = {
-        'ACCEPT': 'application/json',
-        'X-User-Token': user.authentication_token,
-        'X-User-Email': user.email
-      }
-
       transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: transaction_params, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: @headers
 
       expect(response.body).to include_json(
         transaction_id: 123456,
@@ -47,17 +46,11 @@ RSpec.describe "Transactions", type: :request do
     end
 
     it "won´t approve two close transactions" do
-      headers = {
-        'ACCEPT': 'application/json',
-        'X-User-Token': user.authentication_token,
-        'X-User-Email': user.email
-      }
-
       close_transaction
 
       transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: transaction_params, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: @headers
 
       expect(response.body).to include_json(
         transaction_id: 123456,
@@ -66,15 +59,9 @@ RSpec.describe "Transactions", type: :request do
     end
 
     it "don't work if user not filled" do
-      headers = {
-        'ACCEPT': 'application/json',
-        'X-User-Token': user.authentication_token,
-        'X-User-Email': user.email
-      }
-
       transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id)
 
-      post api_v1_transactions_path, params: transaction_params, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: @headers
       expect(response.body).to include_json(
         error: "User field isn't filled or doesn't exist, please correct the request"
       )
@@ -90,7 +77,7 @@ RSpec.describe "Transactions", type: :request do
       create(:transaction, id: '123456')
       transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id, user_id: customer.id, transaction_id: '123456')
 
-      post api_v1_transactions_path, params: transaction_params, headers: headers
+      post api_v1_transactions_path, params: transaction_params, headers: @headers
 
       expect(response.body).to include_json(
         error: "The transaction already exists"

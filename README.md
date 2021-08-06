@@ -55,7 +55,7 @@ Then use Postman (or another tool) to send the requests to the API endpoints.
 
 ### API Endpoints
 
-- **URL**
+- **Endpoint POST**
 ```
 POST  api/v1/transactions
 ```
@@ -100,6 +100,39 @@ _Those data come from the seed (User able to use the API)_
 }
 ```
 
+- **Endpoint PATCH**
+
+_For updating chargeback status_ 
+```
+PATCH  api/v1/transactions/:transaction_id
+```
+
+- **Headers**
+
+```json
+{
+"Content-Type": "application/json",
+"X-User-Email": "test@test.com",
+"X-User-Token": "m2_T9AkghFbMYQqc46--"
+}
+```
+
+- **Body**
+```json
+{
+"transaction_id" : 2342357,
+"chargeback": true
+}
+```
+
+- **Response**
+```json
+{
+"transaction_id" : 2342357,
+"chargeback": true
+}
+```
+
 ### API Fraud explaining
 
 The API is a really simple example of Fraud verification system. There are two main verification from the fraud system :
@@ -126,5 +159,10 @@ For testing we're using rspec, to launch the tests locally, run:
 ```bash
 rspec
 ```
+
+### Areas for improvement
+
+- Be clearer about the Fraud system in the API response. With the actual system we only know if the transaction is approved or denied but we don't know about the reason. It acts likes a black box for the API user.
+- This example only show a really small sample of how the logic could be implemented but we could improve the score calcul with more robust models or even AI.
 
 
