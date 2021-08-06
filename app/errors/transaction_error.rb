@@ -22,4 +22,10 @@ module TransactionError
       "Transaction field isn't filled, please correct the request"
     end
   end
+
+  class ChargebackFormatError < StandardError
+    def message
+      "Chargeback isn't good format. Please review the request"
+    end
+  end
 end

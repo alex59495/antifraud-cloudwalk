@@ -23,7 +23,8 @@ class Api::V1::TransactionsController < Api::V1::BaseController
   end
 
   def update
-    return unless @transaction && params_chargeback
+    return unless @transaction
+    raise ChargebackFormatError unless %w[true false].include?(params_chargeback)
 
     if @transaction.update(has_cbk: params_chargeback)
       render :show

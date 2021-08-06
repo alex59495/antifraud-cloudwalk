@@ -6,6 +6,7 @@ class Api::V1::BaseController < ApplicationController
   rescue_from TransactionError::CustomerEmpty, with: :customer_empty
   rescue_from TransactionError::MerchantEmpty, with: :merchant_empty
   rescue_from TransactionError::TransactionEmpty, with: :transaction_empty
+  rescue_from TransactionError::ChargebackFormatError, with: :chargeback_format
 
 
   def not_found(exception)
@@ -25,6 +26,10 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def transaction_empty(exception)
+    render json: { error: exception.message }, status: :unprocessable_entity
+  end
+
+  def chargeback_format(exception)
     render json: { error: exception.message }, status: :unprocessable_entity
   end
 end

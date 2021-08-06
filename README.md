@@ -103,8 +103,9 @@ _Those data come from the seed (User able to use the API)_
 - **Endpoint PATCH**
 
 _For updating chargeback status_ 
+_Here i'm not respecting the rails standards (/:id) because we don't need the id inside the url. We'll send it inside the request to keep the same behaviour we have in the post method_
 ```
-PATCH  api/v1/transactions/:transaction_id
+PATCH  api/v1/transactions
 ```
 
 - **Headers**

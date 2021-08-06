@@ -5,7 +5,8 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :transactions, only: %i[create update show]
+      resources :transactions, only: %i[create show]
+      patch '/transactions', to: 'transactions#update'
     end
   end
 end
