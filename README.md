@@ -136,22 +136,24 @@ PATCH  api/v1/transactions
 
 ### API Fraud explanation
 
-The API is a really simple example of Fraud verification system. There are two main verification from the fraud system :
+The API is a really simple example of Fraud verification system. There are three main verification from the fraud system :
 - **Verification of chargebacks** : If the user has alredy transactions with chargeback, the transacation recommendation is `denied`
+- **Verification of multiple cards** : If the user has alredy transactions with more than 2 cards or if it has already a transacation for the same day with the same merchant but with a different card, recommendation is `denied`
 - **Point system based on existing user's transactions and his habit of consumming** : 
-If the user has already made a transaction :
-  - in less than 10 minutes => 10 points
-  - in less than 30 minutes => 6 points
-  - in less than 1 hour minutes => 3 points
-  - in less than 6 hours => 2 points
-  - in less than 1 day => 1 point
+If the user has already made Y transaction :
+  - in less than 10 minutes => **score += Y * 5 points**
+  - between 10 and 30 minutes => **score += Y * 3 points**
+  - between 30 minutes and 1 hour minutes => **score += Y * 2 points**
+  - between 1 and 6 hours => **score += Y * 1.5 points**
+  - between 6 hours and 1 day => **score += Y * 1 point**
 
 If the amount of the transaction is :  
-  - superior to 5x the average of other transactions from this user => 6 points
-  - superior to 3x the average of other transactions from this user => 3 points
-  - superior to 2x the average of other transactions from this user => 2 points
+  - superior to 5x the average of other transactions from this user => **score += 10 points**
+  - superior to 3x the average of other transactions from this user => **score += 5 points**
+  - superior to 2x the average of other transactions from this user => **score += 2 points**
 
-If the score > 5, the transaction recommendation is `denied`
+
+If the score > 10, the transaction recommendation is `denied`
 
 
 ### Examples
