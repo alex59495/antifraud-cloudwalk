@@ -78,7 +78,7 @@ _Those data come from the seed (User able to use the API)_
 "user_id" : 97051,
 "card_number" : "434505******9116",
 "transaction_date" : "2019-11-31T23:16:32.812632",
-"transaction_amount" : 373,
+"transaction_amount" : 501.49,
 "device_id" : 285475
 }
 ```
@@ -134,7 +134,7 @@ PATCH  api/v1/transactions
 }
 ```
 
-### API Fraud explaining
+### API Fraud explanation
 
 The API is a really simple example of Fraud verification system. There are two main verification from the fraud system :
 - **Verification of chargebacks** : If the user has alredy transactions with chargeback, the transacation recommendation is `denied`
@@ -152,6 +152,83 @@ If the amount of the transaction is :
   - superior to 2x the average of other transactions from this user => 2 points
 
 If the score > 5, the transaction recommendation is `denied`
+
+
+### Examples
+
+- **Should be approved**
+```json
+{
+"transaction_id" : 21323421000,
+"merchant_id" : 32954,
+"user_id" : 6,
+"card_number" : "428267******9019",
+"transaction_date" : "2019-12-02T20:44:48",
+"transaction_amount" : 100,
+"device_id" : "757451"
+}
+```
+
+- **Should be denied**
+```json
+{
+"transaction_id" : 21323421001,
+"merchant_id" : 8111,
+"user_id" : 3157,
+"card_number" : "535081******2584",
+"transaction_date" : "2019-12-03T01:50:22",
+"transaction_amount" : 100,
+"device_id" : ""
+}
+```
+
+**explication** : This user already have a chargeback => We deny this transaction
+
+- **Should be denied**
+```json
+{
+"transaction_id" : 21323421002,
+"merchant_id" : 8111,
+"user_id" : 14625,
+"card_number" : "523421******9747",
+"transaction_date" : "2019-11-21T16:32:42",
+"transaction_amount" : 100,
+"device_id" : "169566"
+}
+```
+
+**explication** : This user already have a transaction for the same day with the same merchant but with a different card => We deny this transaction
+
+- **Should be denied**
+```json
+{
+"transaction_id" : 21323421003,
+"merchant_id" : 32901,
+"user_id" : 62541,
+"card_number" : "511781******250",
+"transaction_date" : "2019-11-04T10:31:09",
+"transaction_amount" : 100,
+"device_id" : ""
+}
+```
+
+**explication** : This user made too many transactions (2 < 10min & 1 < 30min. Score = 2 * 5 + 1 * 3 = 13 >= 10) => We deny this transaction
+
+- **Should be denied**
+```json
+{
+"transaction_id" : 21323421004,
+"merchant_id" : 31960,
+"user_id" : 95855,
+"card_number" : "539090******9370",
+"transaction_date" : "2019-12-20T17:46:44",
+"transaction_amount" : 1200,
+"device_id" : "589318"
+}
+```
+
+**explication** : This user made a transaction more than 5x superior to his average amount transaction (Score = 10 >= 10 )=> We deny this transaction
+
 
 ### Testing
 

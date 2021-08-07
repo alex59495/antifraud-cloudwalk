@@ -5,7 +5,7 @@ RSpec.describe "Transactions", type: :request do
   let(:customer) { create(:customer) }
   let(:merchant) { create(:merchant) }
   let(:transaction) { create(:transaction, customer: customer, merchant: merchant) }
-  let(:close_transaction) { create(:transaction, customer: customer, merchant: merchant, transaction_date: rand(Time.now - 9.minutes..Time.now).strftime("%FT%T.%L") ) }
+  let(:close_transactions) { create_list(:transaction, 3, customer: customer, merchant: merchant, transaction_date: rand(Time.now - 9.minutes..Time.now).strftime("%FT%T.%L") ) }
 
   describe "POST" do
 
@@ -29,7 +29,7 @@ RSpec.describe "Transactions", type: :request do
   
         transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
   
-        post api_v1_transactions_path, params: transaction_params, headers: headers
+        post api_v1_transactions_path, params: transaction_params, headers: headers, as: :json
   
         expect(response.body).to include_json(
           error: "Your token or email isn't working, please verify the infos !"
@@ -39,7 +39,7 @@ RSpec.describe "Transactions", type: :request do
       it "don't work if user not filled" do
         transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id)
   
-        post api_v1_transactions_path, params: transaction_params, headers: @headers
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
         expect(response.body).to include_json(
           error: "User field isn't filled or doesn't exist, please correct the request"
         )
@@ -55,7 +55,7 @@ RSpec.describe "Transactions", type: :request do
         create(:transaction, id: '123456')
         transaction_params = attributes_for(:transaction).merge(merchant_id: merchant.id, user_id: customer.id, transaction_id: '123456')
   
-        post api_v1_transactions_path, params: transaction_params, headers: @headers
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
   
         expect(response.body).to include_json(
           error: "The transaction already exists"
@@ -67,20 +67,19 @@ RSpec.describe "Transactions", type: :request do
       it "works with complete data" do
         transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
   
-        post api_v1_transactions_path, params: transaction_params, headers: @headers
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
   
         expect(response.body).to include_json(
           transaction_id: 123456,
           recommendation: 'approve'
         )
       end
-  
-      it "won´t approve two close transactions" do
-        close_transaction
-  
+
+      it "won´t approve too many close transactions" do
+        close_transactions
         transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456')
-  
-        post api_v1_transactions_path, params: transaction_params, headers: @headers
+
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
   
         expect(response.body).to include_json(
           transaction_id: 123456,
@@ -97,15 +96,28 @@ RSpec.describe "Transactions", type: :request do
   
         transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456', amout: 6 * average)
   
-        post api_v1_transactions_path, params: transaction_params, headers: @headers
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
   
         expect(response.body).to include_json(
           transaction_id: 123456,
           recommendation: 'deny'
         )
       end
+
+      it "won't approve if a transaction already exists between the same user / merchant < 1 day but with a different card" do
+        transaction
+
+        transaction_params = attributes_for(:transaction).merge(user_id: customer.id, merchant_id: merchant.id, transaction_id: '123456', card_number: "434505******9117")
+
+        post api_v1_transactions_path, params: transaction_params, headers: @headers, as: :json
+
+        expect(response.body).to include_json(
+          transaction_id: 123456,
+          recommendation: 'deny'
+        )
+      end
     end
-    end
+  end
 
     
 
@@ -124,7 +136,8 @@ RSpec.describe "Transactions", type: :request do
     describe "Request OK" do
       it 'Actualize the chargeback status' do
         transaction
-        patch api_v1_transactions_path, params: {transaction_id: transaction.id, chargeback: true}, headers: @headers
+        body = { transaction_id: transaction.id, chargeback: true}
+        patch api_v1_transactions_path, params: body, headers: @headers, as: :json
         expect(response.body).to include_json(
           transaction_id: transaction.id,
           has_cbk: true
@@ -136,7 +149,7 @@ RSpec.describe "Transactions", type: :request do
       it "Send message error if Transaction can't be found" do
         transaction
         false_id = transaction.id + 100
-        patch api_v1_transactions_path, params: {transaction_id: false_id, chargeback: true}, headers: @headers
+        patch api_v1_transactions_path, params: {transaction_id: false_id, chargeback: true}, headers: @headers, as: :json
         expect(response.body).to include_json(
           error: "Couldn't find Transaction with 'id'=#{false_id}"
         )
@@ -144,7 +157,7 @@ RSpec.describe "Transactions", type: :request do
 
       it "Verify chargeback format" do
         transaction
-        patch api_v1_transactions_path, params: {transaction_id: transaction.id, chargeback: 'not good'}, headers: @headers
+        patch api_v1_transactions_path, params: {transaction_id: transaction.id, chargeback: 'not good'}, headers: @headers, as: :json
         expect(response.body).to include_json(
           error: "Chargeback isn't good format. Please review the request"
         )

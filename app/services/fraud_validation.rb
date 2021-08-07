@@ -9,8 +9,8 @@ class FraudValidation < ApplicationService
   end
 
   def call
-    has_cbk = Transaction.where(user_id: user.id, has_cbk: true).any?
+    no_cbk = Transaction.where(user_id: user.id, has_cbk: true).empty?
     score = ScoreCalculation.call(transaction, user)
-    !has_cbk && score < 5
+    no_cbk && !MultipleCard.call(transaction, user) && score < 10
   end
 end
