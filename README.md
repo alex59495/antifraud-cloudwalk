@@ -8,7 +8,7 @@ The answers to the tasks 3.1 and 3.2 can be found inside the folder `_answers`
 
 - Ruby on Rails 6.1.4
 - Ruby 3.0.1
-- PostgreSQL
+- PostgreSQL > 8.4
 
 **Gems**
 - devise (4.8.0) & simple_token_authentification (1.17.0) => Authentification
@@ -45,13 +45,13 @@ and **one User who will be able to use the API.**
 
 ### Running
 
-To run the project run the command
+To run the project run the server with the command
 
 ```bash
 rails s
 ```
 
-Then use Postman (or another tool) to send the requests to the API endpoints.
+Then use Postman (or another tool) to send the requests to the API endpoints. Be sure that the server is still running when sending the requests.
 
 ### API Endpoints
 
@@ -126,7 +126,7 @@ GET api/v1/transactions
   {
     "id": 21320406
   },
-  ...
+  "..."
 ]
 ```
 
@@ -182,7 +182,7 @@ PATCH  api/v1/transactions
 
 The API is a really simple example of Fraud verification system. There are three main verification from the fraud system :
 - **Verification of chargebacks** : If the user has alredy transactions with chargeback, the transacation recommendation is `denied`
-- **Verification of multiple cards** : If the user has alredy transactions with more than 2 cards or if it has already a transacation for the same day with the same merchant but with a different card, recommendation is `denied`
+- **Verification of multiple cards** : If the user has alredy transactions with more than 2 cards or if it has already a transaction for the same day with the same merchant but with a different card, recommendation is `denied`
 - **Point system based on existing user's transactions and his habit of consumming** : 
 If the user has already made Y transaction :
   - in less than 10 minutes => **score += Y * 5 points**
@@ -287,7 +287,8 @@ rspec
 ### Areas for improvement
 
 - Be clearer about the Fraud system in the API response. With the actual system we only know if the transaction is approved or denied but we don't know about the reason. It acts likes a black box for the API user.
-- This example only show a really small sample of how the logic could be implemented but we could improve the score calcul with more robust models or even AI.
+- This example only show a really small sample of how the logic could be implemented but we could improve the logic and score calcul with more robust models or even AI.
 - Some errors are handled (customer empty, transaction_id empty..) but some aren't. We should add some errors handlers to be sure the API request sent is correct.
+- For now all the logic is put in the services object (Rails pattern), but should think about a better and cleaner architecture.
 
 
