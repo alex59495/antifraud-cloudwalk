@@ -290,5 +290,6 @@ rspec
 - This example only show a really small sample of how the logic could be implemented but we could improve the logic and score calcul with more robust models or even AI.
 - Some errors are handled (customer empty, transaction_id empty..) but some aren't. We should add some errors handlers to be sure the API request sent is correct.
 - For now all the logic is put in the services object (Rails pattern), but should think about a better and cleaner architecture.
+- More tests.
 
 
