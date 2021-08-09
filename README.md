@@ -55,10 +55,7 @@ Then use Postman (or another tool) to send the requests to the API endpoints.
 
 ### API Endpoints
 
-- **Endpoint POST**
-```
-POST  api/v1/transactions
-```
+**Important ! For all the requests you have to add the credentials in the headers. Those credentials come from the user created in the seed**
 
 - **Headers**
 
@@ -70,6 +67,12 @@ _Those data come from the seed (User able to use the API)_
 "X-User-Token": "m2_T9AkghFbMYQqc46--"
 }
 ```
+
+- **Endpoint POST**
+```
+POST  api/v1/transactions
+```
+
 - **Body**
 ```json
 {
@@ -100,22 +103,64 @@ _Those data come from the seed (User able to use the API)_
 }
 ```
 
+- **Endpoints GET**
+
+_To get all the transaction ID_
+
+```
+GET api/v1/transactions
+```
+
+- **Response**
+
+```json
+[
+  {
+    "id": 21323127
+  },
+  {
+    "id": 21323129
+  },
+  {
+    "id": 21320405
+  },
+  {
+    "id": 21320406
+  },
+  "...'
+]
+```
+
+_To verify if a transaction ID exists_
+
+
+```
+GET api/v1/transactions/:transaction_id
+```
+
+- **Response OK**
+
+```json
+{
+  "id": 21323127
+},
+```
+
+- **Response Not OK**
+
+```json
+{
+  "error": "Couldn't find Transaction with 'id'=0101010101"
+},
+```
+
+
 - **Endpoint PATCH**
 
 _For updating chargeback status_ 
 _Here i'm not respecting the rails standards (/:id) because we don't need the id inside the url. We'll send it inside the request to keep the same behaviour we have in the post method_
 ```
 PATCH  api/v1/transactions
-```
-
-- **Headers**
-
-```json
-{
-"Content-Type": "application/json",
-"X-User-Email": "test@test.com",
-"X-User-Token": "m2_T9AkghFbMYQqc46--"
-}
 ```
 
 - **Body**
@@ -244,5 +289,6 @@ rspec
 
 - Be clearer about the Fraud system in the API response. With the actual system we only know if the transaction is approved or denied but we don't know about the reason. It acts likes a black box for the API user.
 - This example only show a really small sample of how the logic could be implemented but we could improve the score calcul with more robust models or even AI.
+- Some errors are handled (customer empty, transaction_id empty..) but some aren't. We should add some errors handlers to be sure the API request sent is correct.
 
 

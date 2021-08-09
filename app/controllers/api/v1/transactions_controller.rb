@@ -1,8 +1,12 @@
 class Api::V1::TransactionsController < Api::V1::BaseController
-  before_action :find_transaction, only: [:show, :update]
+  before_action :find_transaction, only: %i[show update]
   before_action :find_customer, :find_merchant, only: [:create]
   acts_as_token_authentication_handler_for User
   protect_from_forgery with: :null_session
+
+  def index
+    @transactions = Transaction.all
+  end
 
   def show; end
 
