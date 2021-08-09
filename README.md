@@ -55,11 +55,10 @@ Then use Postman (or another tool) to send the requests to the API endpoints.
 
 ### API Endpoints
 
-**Important ! For all the requests you have to add the credentials in the headers. Those credentials come from the user created in the seed**
+**Important ! For all the requests you have to add the credentials in the headers. Those credentials come from the user created in the seed.rb.**
 
 - **Headers**
 
-_Those data come from the seed (User able to use the API)_
 ```json
 {
 "Content-Type": "application/json",
@@ -73,7 +72,7 @@ _Those data come from the seed (User able to use the API)_
 POST  api/v1/transactions
 ```
 
-- **Body**
+**Body**
 ```json
 {
 "transaction_id" : 2342357,
@@ -86,7 +85,7 @@ POST  api/v1/transactions
 }
 ```
 
-- **Response OK**
+**Response OK**
 
 ```json
 { 
@@ -94,7 +93,7 @@ POST  api/v1/transactions
 "recommendation" : "approve"
 }
 ```
-- **Response Not OK**
+**Response Not OK**
 
 ```json
 { 
@@ -111,7 +110,7 @@ _To get all the transaction ID_
 GET api/v1/transactions
 ```
 
-- **Response**
+**Response**
 
 ```json
 [
@@ -127,7 +126,7 @@ GET api/v1/transactions
   {
     "id": 21320406
   },
-  "...'
+  ...
 ]
 ```
 
@@ -138,7 +137,7 @@ _To verify if a transaction ID exists_
 GET api/v1/transactions/:transaction_id
 ```
 
-- **Response OK**
+**Response OK**
 
 ```json
 {
@@ -146,7 +145,7 @@ GET api/v1/transactions/:transaction_id
 },
 ```
 
-- **Response Not OK**
+**Response Not OK**
 
 ```json
 {
@@ -163,7 +162,7 @@ _Here i'm not respecting the rails standards (/:id) because we don't need the id
 PATCH  api/v1/transactions
 ```
 
-- **Body**
+**Body**
 ```json
 {
 "transaction_id" : 2342357,
@@ -171,7 +170,7 @@ PATCH  api/v1/transactions
 }
 ```
 
-- **Response**
+**Response**
 ```json
 {
 "transaction_id" : 2342357,
@@ -198,7 +197,7 @@ If the amount of the transaction is :
   - superior to 2x the average of other transactions from this user => **score += 2 points**
 
 
-If the score > 10, the transaction recommendation is `denied`
+If the **score > 10**, the transaction recommendation is `denied`
 
 
 ### Examples
