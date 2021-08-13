@@ -10,10 +10,12 @@ class MultipleCard < ApplicationService
   end
 
   def call
+    return true if more_than_2_cards?
+
     transactions = transactions_under_1day
     transactions = transactions_from_same_merchant
     transactions = transactions_from_different_cards
-    transactions.any? || more_than_2_cards?
+    transactions.any?
   end
 
   private
