@@ -19,7 +19,7 @@ class MultipleCard < ApplicationService
   private
 
   def more_than_2_cards?
-    transactions.pluck(:card_number).length > 2
+    transactions.pluck(:card_number).uniq.length > 2
   end
 
   def transactions_under_1day
