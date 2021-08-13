@@ -7,6 +7,8 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'csv'
 
+p "Destroying the database..."
+Transaction.destroy_all
 User.destroy_all
 Merchant.destroy_all
 p "Destroyed the database"
